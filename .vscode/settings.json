@@ -28,6 +28,7 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "tailwindCSS.classFunctions": ["cn", "cva"]
 }
 
