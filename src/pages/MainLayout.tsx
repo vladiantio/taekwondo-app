@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { BottomNav } from '../components/BottomNav';
@@ -10,41 +10,15 @@ type MainLayoutProps = {
 
 export const MainLayout = ({ onLogout }: MainLayoutProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(false);
-
-  const hideBottomNav = isMenuOpen || isLandscape;
-
-  useEffect(() => {
-    const checkOrientation = () => {
-      const isLandscapeMode = window.innerWidth > window.innerHeight;
-      setIsLandscape(isLandscapeMode);
-    };
-
-    checkOrientation();
-
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-
-    return () => {
-      window.removeEventListener('resize', checkOrientation);
-      window.removeEventListener('orientationchange', checkOrientation);
-    };
-  }, []);
 
   return (
-    <div className="flex flex-col w-full h-screen safe-area-top safe-area-bottom overflow-hidden">
-      <div
-        className="flex-1 w-full overflow-y-auto"
-        style={{ paddingBottom: '80px' }}
-      >
+    <div className="flex flex-col w-full h-dvh bg-[#F7F7F7] safe-area-top safe-area-bottom">
+      <main className="flex-1 w-full overflow-y-auto flex flex-col pb-6 px-4">
         <Header onMenuToggle={() => setIsMenuOpen(true)} />
+        <Outlet />
+      </main>
 
-        <main className="w-full px-4">
-          <Outlet />
-        </main>
-      </div>
-
-      <BottomNav isHidden={hideBottomNav} />
+      <BottomNav />
 
       <MenuMobile
         isOpen={isMenuOpen}

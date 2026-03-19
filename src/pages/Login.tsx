@@ -52,7 +52,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
   };
 
   return (
-    <section className="font-manrope w-screen flex item-center justify-center h-screen min-h-dvh bg-[url('/imgs/bg-login.webp')] bg-no-repeat bg-size-[150%] bg-position-[calc(50%+30px)_center]">
+    <section className="font-manrope w-full flex item-center justify-center h-dvh bg-[url('/imgs/bg-login.webp')] bg-no-repeat bg-size-[150%] bg-position-[calc(50%+30px)_center]">
       <div className="flex items-center justify-center w-full h-full">
         <form
           onSubmit={(e) => {
@@ -64,7 +64,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
           className="flex h-fit w-[90%] flex-col items-center justify-center gap-4 bg-white border border-gray-300 px-4 py-6 rounded-md"
         >
           <div className="flex flex-col items-center w-full gap-2">
-            <img src="/imgs/logo.webp" width={72} alt="logo escuela" />
+            <img src="/imgs/logo.webp" width={80} alt="logo escuela" />
             <h1 className="text-3xl font-bold">Iniciar sesión</h1>
             <p className="leading-5 text-center text-gray-500 text-md">
               Inicia sesión en tu cuenta de Taekwondo de la escuela RAM
@@ -100,7 +100,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 hover:text-gray-700 focus:outline-none"
+              className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 active:text-gray-700 focus:outline-none"
               aria-label={
                 showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
               }
@@ -110,12 +110,12 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
             </button>
           </label>
           {error && (
-            <div className="w-full p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+            <div className="w-full p-3 text-sm text-red-600 border border-red-200 rounded-md bg-red-50">
               {error}
             </div>
           )}
           <Button
-            handleClick={signIn}
+            onClick={signIn}
             type="submit"
             disabled={!isFormValid || isLoading}
           >

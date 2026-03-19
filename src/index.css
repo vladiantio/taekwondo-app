@@ -1,4 +1,63 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-ExtraBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-ExtraLight.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: Manrope;
+  font-display: swap;
+  src: url('/fonts/Manrope-SemiBold.woff2') format('woff2');
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -11,69 +70,32 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  margin: 0;
-}
-
-/* Safe area insets para móviles (iOS notch y home indicator) */
-.safe-area-top {
-  padding-top: env(safe-area-inset-top);
-}
-
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
 @theme {
   --color-primary-500: #800000;
   --color-phover-500: #6b0000;
-  --font-manrope: "Manrope", sans-serif;
+  --color-border: rgba(0, 0, 0, 0.15);
+  --font-manrope: 'Manrope', sans-serif;
 }
 
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-Bold.woff2") format("woff2");
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    overscroll-behavior: none;
+  }
 }
 
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-Bold.woff2") format("woff2");
-}
+@layer utilities {
+  /* Safe area insets para móviles (iOS notch y home indicator) */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
 
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-ExtraBold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-ExtraLight.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-Light.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-Medium.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-Regular.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Manrope;
-  font-display: swap;
-  src: url("/fonts/Manrope-SemiBold.woff2") format("woff2");
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

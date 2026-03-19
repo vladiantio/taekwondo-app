@@ -5,9 +5,15 @@ import { Exams } from './pages/Exams';
 import { Login } from './pages/Login';
 import { Tules } from './pages/Tules';
 import { Theory } from './pages/Theory';
+import { TheoryStudy } from './pages/TheoryStudy';
 import { Account } from './pages/Account';
 import { MainLayout } from './pages/MainLayout';
 import { authClient } from '../lib/auth-client';
+import { InstallPWA } from './components/InstallPWA';
+import { TulManagement } from './pages/TulManagement';
+import { TulVideo } from './pages/TulVideo';
+import { ExamDetail } from './pages/ExamDetail';
+import { ProgressProvider } from './context/ProgressContext';
 
 function App() {
   const [session, setSession] = useState<unknown>(() => {
@@ -68,21 +74,34 @@ function App() {
     );
   }
 
-  if (!session) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
-  }
+  const appContent = session ? (
+    <ProgressProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<MainLayout onLogout={handleLogout} />}>
+            <Route path="/" element={<Exams />} />
+            <Route path="/exam/:examId" element={<ExamDetail />} />
+            <Route path="/tules">
+              <Route index element={<Tules />} />
+              <Route path=":tulId" element={<TulManagement />} />
+              <Route path=":tulId/video" element={<TulVideo />} />
+            </Route>
+            <Route path="/theory" element={<Theory />} />
+            <Route path="/theory/study" element={<TheoryStudy />} />
+            <Route path="/account" element={<Account />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ProgressProvider>
+  ) : (
+    <Login onLoginSuccess={handleLoginSuccess} />
+  );
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout onLogout={handleLogout} />}>
-          <Route path="/" element={<Exams />} />
-          <Route path="/tules" element={<Tules />} />
-          <Route path="/theory" element={<Theory />} />
-          <Route path="/account" element={<Account />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <>
+      <InstallPWA />
+      {appContent}
+    </>
   );
 }
 

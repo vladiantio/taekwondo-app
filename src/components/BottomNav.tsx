@@ -1,14 +1,11 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useRef, useEffect, useState, type ReactNode } from 'react';
-import { Book, Paperclip, User } from 'lucide-react';
+import { BookOpenCheck, BookText, UserRound } from 'lucide-react';
+import TulesIcon from '@/assets/tules.svg?react';
 
 type IndicatorStyle = {
   left: number;
   width: number;
-};
-
-type BottomNavProps = {
-  isHidden?: boolean;
 };
 
 type NavItem = {
@@ -17,7 +14,7 @@ type NavItem = {
   label: string;
 };
 
-export const BottomNav = ({ isHidden = false }: BottomNavProps) => {
+export const BottomNav = () => {
   const location = useLocation();
   const [indicatorStyle, setIndicatorStyle] = useState<IndicatorStyle>({
     left: 0,
@@ -30,38 +27,22 @@ export const BottomNav = ({ isHidden = false }: BottomNavProps) => {
   const navItems: NavItem[] = [
     {
       to: '/',
-      icon: <Book />,
+      icon: <BookOpenCheck strokeWidth={1.5} />,
       label: 'Exámenes',
     },
     {
       to: '/tules',
-      icon: (
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-          <path d="M2 17l10 5 10-5"></path>
-          <path d="M2 12l10 5 10-5"></path>
-        </svg>
-      ),
-      label: 'Tules',
+      icon: <TulesIcon />,
+      label: 'Formas',
     },
     {
       to: '/theory',
-      icon: <Paperclip />,
+      icon: <BookText strokeWidth={1.25} />,
       label: 'Teoría',
     },
     {
       to: '/account',
-      icon: <User />,
+      icon: <UserRound strokeWidth={1.5} />,
       label: 'Perfil',
     },
   ];
@@ -76,8 +57,8 @@ export const BottomNav = ({ isHidden = false }: BottomNavProps) => {
         const navRect = nav.getBoundingClientRect();
 
         setIndicatorStyle({
-          left: buttonRect.left - navRect.left + buttonRect.width / 2 - 16,
-          width: 32,
+          left: buttonRect.left - navRect.left + buttonRect.width / 2 - 24,
+          width: 48,
         });
       }
     };
@@ -91,9 +72,7 @@ export const BottomNav = ({ isHidden = false }: BottomNavProps) => {
   return (
     <nav
       ref={navRef}
-      className={`fixed ${
-        isHidden ? 'translate-y-full' : 'translate-y-0'
-      } bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50 safe-area-bottom`}
+      className="sticky bottom-0 inset-x-0 bg-white border-t border-gray-200 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-40 safe-area-bottom landscape:hidden"
       aria-label="Navegación principal"
     >
       <div
@@ -104,9 +83,12 @@ export const BottomNav = ({ isHidden = false }: BottomNavProps) => {
         }}
       />
 
-      <ul className="flex items-center h-16 max-w-2xl p-0 m-0 mx-auto list-none">
+      <ul className="flex items-center h-16 max-w-2xl gap-4 p-0 mx-4 list-none">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.to;
+          const isActive =
+            item.to === '/'
+              ? location.pathname === item.to
+              : location.pathname.startsWith(item.to);
 
           return (
             <li
@@ -121,17 +103,17 @@ export const BottomNav = ({ isHidden = false }: BottomNavProps) => {
                 className={`
                   flex flex-col items-center justify-center gap-1 w-full py-2 
                   rounded-lg transition-colors duration-200
-                  hover:bg-gray-100 focus:outline-none focus-visible:ring-2 
+                  active:bg-gray-100 focus:outline-none focus-visible:ring-2 
                   focus-visible:ring-primary-500 focus-visible:ring-offset-2
-                  ${isActive ? 'text-primary-500' : 'text-gray-500'}
+                  ${isActive ? 'text-primary-500' : 'text-[#191919]'}
                 `}
                 aria-label={item.label}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <span className="flex items-center justify-center w-6 h-6">
+                <span className="flex items-center justify-center size-5">
                   {item.icon}
                 </span>
-                <span className="text-xs font-medium leading-none">
+                <span className="text-sm leading-none font-lg">
                   {item.label}
                 </span>
               </NavLink>

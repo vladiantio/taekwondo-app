@@ -14,12 +14,14 @@
   },
   "dependencies": {
     "better-auth": "1.4.9",
+    "clsx": "2.1.1",
     "lucide-react": "0.562.0",
     "media-chrome": "4.17.2",
     "mongodb": "7.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-router-dom": "7.11.0",
+    "tailwind-merge": "3.4.0",
     "workbox-window": "7.4.0"
   },
   "devDependencies": {
@@ -28,6 +30,7 @@
     "@types/node": "24.10.1",
     "@types/react": "19.2.5",
     "@types/react-dom": "19.2.3",
+    "@vite-pwa/assets-generator": "1.0.2",
     "@vitejs/plugin-react-swc": "4.2.2",
     "autoprefixer": "10.4.23",
     "eslint": "9.39.1",
@@ -41,6 +44,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "8.46.4",
     "vite": "7.2.4",
-    "vite-plugin-pwa": "1.2.0"
+    "vite-plugin-pwa": "1.2.0",
+    "vite-plugin-svgr": "4.5.0"
   }
 }

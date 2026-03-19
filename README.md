@@ -122,5 +122,11 @@ For a better development experience, consider installing:
 
 ---
 
+**Thanks to all the contributors who have made this project possible!**
+
+[![Contributors](https://contrib.rocks/image?repo=Tekwondo-RAM/taekwondo-app)](https://github.com/Tekwondo-RAM/taekwondo-app/graphs/contributors)
+
+---
+
 Made by [Comuafor](https://discord.com/invite/comuafor) 🐀
 
