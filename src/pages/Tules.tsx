@@ -85,7 +85,7 @@ const TulCard = ({ tul }: { tul: Tul }) => {
     <Link
       to="/tules/$tulId"
       params={{ tulId: tul.id }}
-      className="flex flex-col gap-4 bg-white pb-4 rounded-b-md"
+      className="flex flex-col gap-4 overflow-hidden bg-white pb-4 rounded-lg shadow-[0_4px_0_#cdc9c9] transition-colors active:bg-slate-50"
     >
       <div className="relative">
         <img

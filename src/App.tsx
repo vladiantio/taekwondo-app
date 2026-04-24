@@ -19,6 +19,19 @@ function screenIndexForPathname(pathname: string): number {
   );
 }
 
+function isMainTabRootPath(pathname: string): boolean {
+  const p = pathname.replace(/\/$/, '') || '/';
+  if (p === '/') return true;
+  const roots: readonly string[] = [
+    '/calendar',
+    '/tules',
+    '/exams',
+    '/theory',
+    '/account',
+  ];
+  return roots.includes(p);
+}
+
 const router = createRouter({
   routeTree,
   scrollRestoration: true,
@@ -30,7 +43,16 @@ const router = createRouter({
       const fromScreen = screenIndexForPathname(fromLocation.pathname);
       const toScreen = screenIndexForPathname(toLocation.pathname);
 
-      if (fromScreen !== -1 && toScreen !== -1 && fromScreen !== toScreen) {
+      const bothAtTabRoots =
+        isMainTabRootPath(fromLocation.pathname) &&
+        isMainTabRootPath(toLocation.pathname);
+
+      if (
+        bothAtTabRoots &&
+        fromScreen !== -1 &&
+        toScreen !== -1 &&
+        fromScreen !== toScreen
+      ) {
         return fromScreen < toScreen ? ['tab-next'] : ['tab-prev'];
       }
 

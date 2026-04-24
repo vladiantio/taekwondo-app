@@ -351,12 +351,3 @@ export const categoryLabels: Record<VocabularyCategory, string> = {
   heights: 'Zonas y alturas',
 };
 
-export const categoryIcons: Record<VocabularyCategory, string> = {
-  numbers: '🔢',
-  commands: '📢',
-  body: '👤',
-  colors: '🎨',
-  techniques: '🥋',
-  phrases: '💬',
-  heights: '↕️',
-};
