@@ -8,7 +8,7 @@ test('can navigate to a tul and see its details', async ({ page }) => {
   await page.getByRole('link', { name: 'Blanco con punta Amarilla' }).click();
 
   // Click on a specific tul
-  await page.getByRole('link', { name: 'Saju Jirugi Pre-Tul 14' }).click();
+  await page.getByRole('link', { name: 'Ir a la forma Saju Jirugi' }).click();
 
   // Verify we landed on the detail page
   await expect(page.locator('section')).toContainText('Diagrama');
