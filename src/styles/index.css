@@ -16,6 +16,7 @@
 }
 
 @theme {
+  --color-background: #f7f7f7;
   --color-primary-500: #800000;
   --color-phover-500: #6b0000;
   --color-border: rgba(0, 0, 0, 0.15);
@@ -28,7 +29,6 @@
     border-color: var(--color-border);
   }
 
-
   html,
   body {
     height: 100%;
@@ -39,6 +39,7 @@
 
   body {
     margin: 0;
+    background-color: var(--color-background);
   }
 
   #root {

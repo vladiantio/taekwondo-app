@@ -65,7 +65,7 @@ export function Header() {
   const backNavigateTo = backToExams ? '/exams' : undefined;
 
   return (
-    <header className="relative z-50 flex shrink-0 items-center justify-between bg-[#F7F7F7] pt-[calc(env(safe-area-inset-top,0px)+0.5rem)] pb-3">
+    <header className="flex shrink-0 items-center justify-between bg-background safe-area-top-3 pb-3">
       <div className="flex items-center gap-1">
         {showBack ? (
           <BackButton className="-ml-2" navigateTo={backNavigateTo} />
