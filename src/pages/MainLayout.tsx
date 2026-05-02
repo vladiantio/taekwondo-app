@@ -1,30 +1,15 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Header } from '../components/Header';
-import { BottomNav } from '../components/BottomNav';
-import { MenuMobile } from '../components/MenuMobile';
+import { Outlet } from '@tanstack/react-router';
+import { Header } from '@/components/Header';
+import { BottomNav } from '@/components/BottomNav';
 
-type MainLayoutProps = {
-  onLogout: () => void;
-};
-
-export const MainLayout = ({ onLogout }: MainLayoutProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+export function MainLayout() {
   return (
-    <div className="flex flex-col w-full h-dvh bg-[#F7F7F7] safe-area-top safe-area-bottom">
-      <main className="flex-1 w-full overflow-y-auto flex flex-col pb-6 px-4">
-        <Header onMenuToggle={() => setIsMenuOpen(true)} />
+    <div className="flex flex-col h-full min-h-0 w-full min-w-0 *:px-4">
+      <Header />
+      <main className="[view-transition-name:main-content] hide-scrollbar flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-background **:data-[slot=loading-page]:h-full pb-12">
         <Outlet />
       </main>
-
       <BottomNav />
-
-      <MenuMobile
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onLogout={onLogout}
-      />
     </div>
   );
-};
+}

@@ -1,7 +1,8 @@
 import { Book, Paperclip, User, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '../common/Button';
+import { Link, useLocation } from '@tanstack/react-router';
+import { Button } from '@/common/Button';
 import TulesIcon from '@/assets/tules.svg?react';
+import { useAuth } from '@/context/AuthContext';
 
 type NavItem = {
   to: string;
@@ -12,10 +13,10 @@ type NavItem = {
 type MenuMobileProps = {
   isOpen: boolean;
   onClose: () => void;
-  onLogout: () => void;
 };
 
-export const MenuMobile = ({ isOpen, onClose, onLogout }: MenuMobileProps) => {
+export const MenuMobile = ({ isOpen, onClose }: MenuMobileProps) => {
+  const { logout } = useAuth();
   const location = useLocation();
 
   const navItems: NavItem[] = [
@@ -62,7 +63,7 @@ export const MenuMobile = ({ isOpen, onClose, onLogout }: MenuMobileProps) => {
         </button>
       </header>
 
-      <nav className="flex flex-col py-6 overflow-y-auto">
+      <nav className="flex flex-col py-6 overflow-y-auto flex-1">
         {navItems.map((item, index) => {
           const isActive =
             item.to === '/'
@@ -91,8 +92,8 @@ export const MenuMobile = ({ isOpen, onClose, onLogout }: MenuMobileProps) => {
         })}
       </nav>
 
-      <div className="flex-none px-6 pt-4 pb-6 border-t border-gray-200 safe-area-bottom">
-        <Button onClick={onLogout}>Cerrar sesión</Button>
+      <div className="px-6 pt-4 pb-6 border-t border-gray-200">
+        <Button onClick={logout}>Cerrar sesión</Button>
       </div>
     </div>
   );

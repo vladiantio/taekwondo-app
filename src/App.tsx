@@ -1,107 +1,91 @@
-import { useState, useEffect } from 'react';
-import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Exams } from './pages/Exams';
-import { Login } from './pages/Login';
-import { Tules } from './pages/Tules';
-import { Theory } from './pages/Theory';
-import { TheoryStudy } from './pages/TheoryStudy';
-import { Account } from './pages/Account';
-import { MainLayout } from './pages/MainLayout';
-import { authClient } from '../lib/auth-client';
-import { InstallPWA } from './components/InstallPWA';
-import { TulManagement } from './pages/TulManagement';
-import { TulVideo } from './pages/TulVideo';
-import { ExamDetail } from './pages/ExamDetail';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { routeTree } from './routeTree.gen';
+import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
+import { LoadingPage } from './components/LoadingPage';
+
+const SCREEN_ORDER = [
+  '/calendar',
+  '/tules',
+  '/exams',
+  '/theory',
+  '/account',
+] as const;
+
+function screenIndexForPathname(pathname: string): number {
+  return SCREEN_ORDER.findIndex(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+}
+
+function isMainTabRootPath(pathname: string): boolean {
+  const p = pathname.replace(/\/$/, '') || '/';
+  if (p === '/') return true;
+  const roots: readonly string[] = [
+    '/calendar',
+    '/tules',
+    '/exams',
+    '/theory',
+    '/account',
+  ];
+  return roots.includes(p);
+}
+
+const router = createRouter({
+  routeTree,
+  scrollRestoration: true,
+  defaultPendingComponent: LoadingPage,
+  defaultViewTransition: {
+    types: ({ fromLocation, toLocation }) => {
+      if (!fromLocation) return [];
+
+      const fromScreen = screenIndexForPathname(fromLocation.pathname);
+      const toScreen = screenIndexForPathname(toLocation.pathname);
+
+      const bothAtTabRoots =
+        isMainTabRootPath(fromLocation.pathname) &&
+        isMainTabRootPath(toLocation.pathname);
+
+      if (
+        bothAtTabRoots &&
+        fromScreen !== -1 &&
+        toScreen !== -1 &&
+        fromScreen !== toScreen
+      ) {
+        return fromScreen < toScreen ? ['tab-next'] : ['tab-prev'];
+      }
+
+      const fromIndex = fromLocation.state.__TSR_index;
+      const toIndex = toLocation.state.__TSR_index;
+
+      if (fromIndex === toIndex) return [];
+      return fromIndex > toIndex ? ['slide-right'] : ['slide-left'];
+    },
+  },
+});
+
+declare module '@tanstack/react-router' {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 function App() {
-  const [session, setSession] = useState<unknown>(() => {
-    const stored = localStorage.getItem('authSession');
-    return stored ? JSON.parse(stored) : null;
-  });
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const sessionData = await authClient.getSession();
-        const currentSession = sessionData.data?.session || null;
-        setSession(currentSession);
-
-        if (currentSession) {
-          localStorage.setItem('authSession', JSON.stringify(currentSession));
-        } else {
-          localStorage.removeItem('authSession');
-        }
-      } catch {
-        setSession(null);
-        localStorage.removeItem('authSession');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkSession();
-  }, []);
-
-  const handleLoginSuccess = async () => {
-    try {
-      const sessionData = await authClient.getSession();
-      const currentSession = sessionData.data?.session || null;
-      setSession(currentSession);
-
-      if (currentSession) {
-        localStorage.setItem('authSession', JSON.stringify(currentSession));
-      }
-    } catch {
-      setSession(null);
-      localStorage.removeItem('authSession');
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('isLogged');
+    router.navigate({ to: '/login' });
   };
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    setSession(null);
-    localStorage.removeItem('authSession');
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center w-screen h-screen">
-        <div className="text-lg">Cargando...</div>
-      </div>
-    );
-  }
-
-  const appContent = session ? (
-    <ProgressProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout onLogout={handleLogout} />}>
-            <Route path="/" element={<Exams />} />
-            <Route path="/exam/:examId" element={<ExamDetail />} />
-            <Route path="/tules">
-              <Route index element={<Tules />} />
-              <Route path=":tulId" element={<TulManagement />} />
-              <Route path=":tulId/video" element={<TulVideo />} />
-            </Route>
-            <Route path="/theory" element={<Theory />} />
-            <Route path="/theory/study" element={<TheoryStudy />} />
-            <Route path="/account" element={<Account />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ProgressProvider>
-  ) : (
-    <Login onLoginSuccess={handleLoginSuccess} />
-  );
 
   return (
-    <>
-      <InstallPWA />
-      {appContent}
-    </>
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col">
+      <AuthProvider onLogout={handleLogout}>
+        <ProgressProvider>
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+            <RouterProvider router={router} />
+          </div>
+        </ProgressProvider>
+      </AuthProvider>
+    </div>
   );
 }
 

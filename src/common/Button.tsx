@@ -1,11 +1,13 @@
+/* oxlint-disable react-refresh/only-export-components */
 import { cn } from '@/utils/cn';
 
-const variantClass = {
+export const variantClass = {
   primary: 'bg-primary-500 active:bg-phover-500 text-white',
   outline: 'bg-white active:bg-neutral-100 border text-primary-500',
+  ghost: 'bg-transparent active:bg-black/10',
 };
 
-const sizeClass = {
+export const sizeClass = {
   default: 'w-full h-12 px-4 py-2',
   sm: 'w-full h-8 px-2 py-1',
   lg: 'w-full h-16 px-6 py-3',

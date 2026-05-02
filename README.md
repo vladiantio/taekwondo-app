@@ -1,20 +1,16 @@
 # Taekwondo app
 
-
-
 ---
 
 ## Screenshots
 
 ### SOON...
 
-
 ---
 
 ## Overview
 
 ### SOON...
-
 
 ---
 
@@ -30,8 +26,8 @@
 
 Make sure you have the following installed on your system:
 
-* **Node.js** (v16 or later)
-* **npm**
+- **Node.js** (v20 LTS)
+- **npm**
 
 ---
 
@@ -109,16 +105,16 @@ git push origin feature-name
 
 For a better development experience, consider installing:
 
-* ES7+ React/Redux/React-Native snippets
-* Simple React Snippets
-* ESLint
-* Error Lens
-* Bracket Pair Color DLW
-* Auto Rename Tag
-* Auto Close Tag
-* GitLens
-* Auto Import
-* Auto Complete Tag
+- ES7+ React/Redux/React-Native snippets
+- Simple React Snippets
+- ESLint
+- Error Lens
+- Bracket Pair Color DLW
+- Auto Rename Tag
+- Auto Close Tag
+- GitLens
+- Auto Import
+- Auto Complete Tag
 
 ---
 
@@ -129,4 +125,3 @@ For a better development experience, consider installing:
 ---
 
 Made by [Comuafor](https://discord.com/invite/comuafor) 🐀
-

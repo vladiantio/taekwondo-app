@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { ArrowLeft, Check, X, RotateCcw } from 'lucide-react';
-import { VocabularyItem } from '../consts/vocabulary';
+import type { VocabularyItem } from '@/consts/vocabulary';
 
 type QuizProps = {
   items: VocabularyItem[];
@@ -13,45 +13,39 @@ type QuizQuestion = {
   correctAnswer: string;
 };
 
-export const Quiz = ({ items, onBack }: QuizProps) => {
-  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+function buildQuestionList(items: VocabularyItem[]): QuizQuestion[] {
+  const shuffled = [...items].sort(() => Math.random() - 0.5).slice(0, 10);
+  return shuffled.map((item) => {
+    const wrongAnswers = items
+      .filter((i) => i.spanish !== item.spanish)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+      .map((i) => i.spanish);
+
+    const options = [...wrongAnswers, item.spanish].sort(
+      () => Math.random() - 0.5
+    );
+
+    return {
+      question: item,
+      options,
+      correctAnswer: item.spanish,
+    };
+  });
+}
+
+type QuizRunProps = QuizProps & {
+  onReinitialize: () => void;
+};
+
+const QuizRun = ({ items, onBack, onReinitialize }: QuizRunProps) => {
+  const questions = useMemo(() => buildQuestionList(items), [items]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isCorrect, setIsCorrect] = useState(false);
   const [answered, setAnswered] = useState(false);
-
-  useEffect(() => {
-    generateQuestions();
-  }, [items]);
-
-  const generateQuestions = () => {
-    const shuffled = [...items].sort(() => Math.random() - 0.5).slice(0, 10);
-    const newQuestions: QuizQuestion[] = shuffled.map((item) => {
-      // Crear opciones incorrectas
-      const wrongAnswers = items
-        .filter((i) => i.spanish !== item.spanish)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map((i) => i.spanish);
-
-      const options = [...wrongAnswers, item.spanish].sort(() => Math.random() - 0.5);
-
-      return {
-        question: item,
-        options,
-        correctAnswer: item.spanish,
-      };
-    });
-
-    setQuestions(newQuestions);
-    setCurrentIndex(0);
-    setScore(0);
-    setShowResult(false);
-    setSelectedAnswer(null);
-    setAnswered(false);
-  };
 
   const handleAnswer = (answer: string) => {
     if (answered) return;
@@ -71,24 +65,23 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
       setCurrentIndex((prev) => prev + 1);
       setSelectedAnswer(null);
       setAnswered(false);
-      setIsCorrect(null);
+      setIsCorrect(false);
     } else {
       setShowResult(true);
     }
   };
 
   const handleRestart = () => {
-    generateQuestions();
+    onReinitialize();
   };
 
   if (questions.length === 0) {
     return (
       <section className="flex flex-col items-center justify-center gap-4 py-12">
-        <p className="text-gray-500">No hay suficientes palabras para el quiz</p>
-        <button
-          onClick={onBack}
-          className="text-primary-500 hover:underline"
-        >
+        <p className="text-gray-500">
+          No hay suficientes palabras para el quiz
+        </p>
+        <button onClick={onBack} className="text-primary-500 hover:underline">
           Volver
         </button>
       </section>
@@ -100,7 +93,9 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
     return (
       <section className="flex flex-col items-center gap-6 pt-4">
         <div className="flex flex-col items-center gap-4 p-8 bg-white rounded-xl shadow-lg">
-          <div className="text-6xl font-bold text-primary-500">{percentage}%</div>
+          <div className="text-6xl font-bold text-primary-500">
+            {percentage}%
+          </div>
           <p className="text-xl font-semibold">
             {score} de {questions.length} correctas
           </p>
@@ -160,13 +155,16 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
           </p>
         </div>
 
-        <p className="text-sm text-gray-400">¿Cuál es el significado en español?</p>
+        <p className="text-sm text-gray-400">
+          ¿Cuál es el significado en español?
+        </p>
 
         {/* Opciones */}
         <div className="grid w-full gap-3 mt-4">
           {currentQuestion.options.map((option, index) => {
-            let buttonClass = 'p-4 text-left border-2 rounded-lg transition-all ';
-            
+            let buttonClass =
+              'p-4 text-left border-2 rounded-lg transition-all ';
+
             if (answered && option === currentQuestion.correctAnswer) {
               buttonClass += 'bg-green-50 border-green-500 text-green-700';
             } else if (answered && option === selectedAnswer && !isCorrect) {
@@ -174,7 +172,8 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
             } else if (selectedAnswer === option && !answered) {
               buttonClass += 'border-primary-500 bg-primary-50';
             } else {
-              buttonClass += 'border-gray-200 hover:border-primary-300 bg-white';
+              buttonClass +=
+                'border-gray-200 hover:border-primary-300 bg-white';
             }
 
             return (
@@ -189,9 +188,11 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
                   {answered && option === currentQuestion.correctAnswer && (
                     <Check className="w-5 h-5 text-green-500" />
                   )}
-                  {answered && option === selectedAnswer && option !== currentQuestion.correctAnswer && (
-                    <X className="w-5 h-5 text-red-500" />
-                  )}
+                  {answered &&
+                    option === selectedAnswer &&
+                    option !== currentQuestion.correctAnswer && (
+                      <X className="w-5 h-5 text-red-500" />
+                    )}
                 </div>
               </button>
             );
@@ -204,7 +205,9 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
             onClick={handleNext}
             className="w-full px-6 py-3 mt-4 text-white rounded-lg bg-primary-500 hover:bg-phover-500"
           >
-            {currentIndex < questions.length - 1 ? 'Siguiente' : 'Ver resultados'}
+            {currentIndex < questions.length - 1
+              ? 'Siguiente'
+              : 'Ver resultados'}
           </button>
         )}
       </div>
@@ -214,5 +217,22 @@ export const Quiz = ({ items, onBack }: QuizProps) => {
         Puntuación: {score} / {currentIndex + 1}
       </div>
     </section>
+  );
+};
+
+export const Quiz = ({ items, onBack }: QuizProps) => {
+  const [session, setSession] = useState(0);
+  const itemsKey = useMemo(
+    () => items.map((i) => `${i.korean}\0${i.spanish}`).join('|'),
+    [items]
+  );
+
+  return (
+    <QuizRun
+      key={`${itemsKey}__${session}`}
+      items={items}
+      onBack={onBack}
+      onReinitialize={() => setSession((s) => s + 1)}
+    />
   );
 };

@@ -1,32 +1,22 @@
-import { useEffect, useState } from 'react';
-
-import { useInstallPrerequisites } from '../hooks/useInstallPrerequisites';
-import { useDeferredInstallPrompt } from '../hooks/useDeferredInstallPrompt';
+import { useInstallPrerequisites } from '@/hooks/useInstallPrerequisites';
+import { useDeferredInstallPrompt } from '@/hooks/useDeferredInstallPrompt';
 
 const SHOW_DELAY_MS = 1500;
 
 export const InstallPWA = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const installCriteria = useInstallPrerequisites(SHOW_DELAY_MS);
   const { promptEvent, resetPrompt } = useDeferredInstallPrompt();
-
-  useEffect(() => {
-    if (installCriteria && promptEvent) {
-      setIsModalOpen(true);
-    }
-  }, [installCriteria, promptEvent]);
+  const isModalOpen = installCriteria && promptEvent;
 
   const handleInstall = async () => {
     if (!promptEvent) return;
     await promptEvent.prompt();
     await promptEvent.userChoice;
     resetPrompt();
-    setIsModalOpen(false);
   };
 
   const handleClose = () => {
     resetPrompt();
-    setIsModalOpen(false);
   };
 
   if (!isModalOpen) return null;

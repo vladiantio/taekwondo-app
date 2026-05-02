@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Button } from '../common/Button';
-import { isValidEmail } from '../utils/isValidEmail';
+import { Button } from '@/common/Button';
 import { Eye, EyeOff } from 'lucide-react';
 import { authClient } from '../../lib/auth-client';
 
@@ -17,8 +16,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isFormValid =
-    isValidEmail(formData.email) && formData.password.length > 0;
+  const isFormValid = formData.email.length > 0 && formData.password.length > 0;
 
   const signIn = async () => {
     if (!isFormValid) return;
@@ -84,9 +82,12 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
               disabled={isLoading}
             />
           </label>
-          <label className="relative w-full">
-            <p className="sr-only">Contraseña</p>
+          <div className="relative w-full">
+            <label htmlFor="login-password" className="sr-only">
+              Contraseña
+            </label>
             <input
+              id="login-password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Contraseña"
               className="flex items-center w-full h-12 px-4 pr-12 text-gray-900 border border-gray-300 rounded-md active:border-gray-400"
@@ -108,7 +109,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
             >
               {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
             </button>
-          </label>
+          </div>
           {error && (
             <div className="w-full p-3 text-sm text-red-600 border border-red-200 rounded-md bg-red-50">
               {error}

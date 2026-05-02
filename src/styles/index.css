@@ -1,0 +1,305 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './fonts.css';
+
+:root {
+  --vt-tab-ease: cubic-bezier(0.28, 0.7, 0, 0.99);
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@theme {
+  --color-background: #f7f7f7;
+  --color-primary-500: #800000;
+  --color-phover-500: #6b0000;
+  --color-border: rgba(0, 0, 0, 0.15);
+  --font-sans: 'Inter', sans-serif;
+  --font-manrope: 'Manrope', sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-background);
+  }
+
+  #root {
+    display: flex;
+    min-height: 100dvh;
+    min-height: 100%;
+    height: 100%;
+    flex-direction: column;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Safe area insets para moviles (iOS notch y home indicator) */
+@utility safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@utility safe-area-top-* {
+  padding-top: calc(
+    (var(--spacing) * --value(integer)) + env(safe-area-inset-top, 0px)
+  );
+  padding-top: calc(--value([length]) + env(safe-area-inset-top, 0px));
+}
+
+@utility safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility safe-area-bottom-* {
+  padding-bottom: calc(
+    (var(--spacing) * --value(integer)) + env(safe-area-inset-bottom, 0px)
+  );
+  padding-bottom: calc(--value([length]) + env(safe-area-inset-bottom, 0px));
+}
+
+/* ============================================================
+   View Transition - iOS-like feel
+   - main-content: the animated page area
+   - app-header + bottom-nav: frozen chrome (no animation)
+   ============================================================ */
+
+html:active-view-transition-type(slide-left),
+html:active-view-transition-type(slide-right),
+html:active-view-transition-type(tab-next),
+html:active-view-transition-type(tab-prev) {
+  &::view-transition-old(root),
+  &::view-transition-new(root) {
+    animation: none;
+  }
+
+  /* main-content is clipped to the area above the bottom nav. Keep its group
+     below bottom-nav: animated layers + isolation can otherwise paint on top. */
+  &::view-transition-group(main-content) {
+    z-index: 0;
+    overflow: hidden;
+    /* Reserve space for h-16 nav + home indicator (layout mirrors MainLayout + BottomNav). */
+    inset: 0 0 calc(4.5rem + 2 * env(safe-area-inset-bottom, 0px)) 0;
+  }
+
+  &::view-transition-group(bottom-nav) {
+    z-index: 10;
+  }
+
+  /* Keep the bottom nav frozen in place */
+  &::view-transition-old(bottom-nav),
+  &::view-transition-new(bottom-nav) {
+    animation: none;
+  }
+
+  &::view-transition-image-pair(main-content) {
+    isolation: isolate;
+  }
+
+  &::view-transition-old(main-content),
+  &::view-transition-new(main-content) {
+    height: 100%;
+    background: #f7f7f7;
+  }
+}
+
+/* ---------- Slide Left (navigate forward into detail pages) ---------- */
+html:active-view-transition-type(slide-left) {
+  &::view-transition-old(main-content) {
+    animation: 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both ios-out-left;
+  }
+  &::view-transition-new(main-content) {
+    animation: 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both ios-in-left;
+  }
+}
+
+/* incoming from right, outgoing drifts left slightly - subtle iOS push */
+@keyframes ios-out-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-8%);
+    opacity: 0.992;
+  }
+}
+@keyframes ios-in-left {
+  from {
+    transform: translateX(18%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ---------- Slide Right (navigate back from detail pages) ---------- */
+html:active-view-transition-type(slide-right) {
+  &::view-transition-old(main-content) {
+    animation: 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both ios-out-right;
+  }
+  &::view-transition-new(main-content) {
+    animation: 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both ios-in-right;
+  }
+}
+
+/* outgoing exits right, incoming drifts in from left - subtle iOS pop */
+@keyframes ios-out-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(18%);
+    opacity: 1;
+  }
+}
+@keyframes ios-in-right {
+  from {
+    transform: translateX(-8%);
+    opacity: 0.992;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ---------- Tab bar (bottom nav): full directional slide like iOS push/pop ---------- */
+html:active-view-transition-type(tab-next) {
+  &::view-transition-old(main-content) {
+    animation: 380ms var(--vt-tab-ease) both tab-next-out;
+  }
+  &::view-transition-new(main-content) {
+    animation: 380ms var(--vt-tab-ease) both tab-next-in;
+  }
+}
+@keyframes tab-next-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-26%);
+    opacity: 0.97;
+  }
+}
+@keyframes tab-next-in {
+  from {
+    transform: translateX(100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Previous tab to the left: incoming from the left, outgoing recedes to the right. */
+html:active-view-transition-type(tab-prev) {
+  &::view-transition-old(main-content) {
+    animation: 380ms var(--vt-tab-ease) both tab-prev-out;
+  }
+  &::view-transition-new(main-content) {
+    animation: 380ms var(--vt-tab-ease) both tab-prev-in;
+  }
+}
+@keyframes tab-prev-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(26%);
+    opacity: 0.97;
+  }
+}
+@keyframes tab-prev-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:active-view-transition-type(tab-next) {
+    &::view-transition-old(main-content),
+    &::view-transition-new(main-content) {
+      animation-duration: 200ms;
+    }
+  }
+  html:active-view-transition-type(tab-prev) {
+    &::view-transition-old(main-content),
+    &::view-transition-new(main-content) {
+      animation-duration: 200ms;
+    }
+  }
+}
+
+/* ---------- Warp (used for individual post/card elements) ---------- */
+html:active-view-transition-type(warp) {
+  &::view-transition-old(post) {
+    animation: 400ms ease-out both warp-out;
+  }
+  &::view-transition-new(post) {
+    animation: 400ms ease-out both warp-in;
+  }
+}
+
+@keyframes warp-out {
+  from {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    opacity: 0;
+    filter: blur(15px) brightness(1.8);
+    transform: scale(1.1) rotate(90deg);
+  }
+}
+
+@keyframes warp-in {
+  from {
+    opacity: 0;
+    filter: blur(15px) brightness(1.8);
+    transform: scale(0.9) rotate(-45deg);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform: scale(1) rotate(0deg);
+  }
+}

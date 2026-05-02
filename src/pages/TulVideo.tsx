@@ -1,9 +1,9 @@
 import { Player } from '@/common/Video';
-import { useParams } from 'react-router-dom';
 import { tuls } from '@/consts/tuls';
+import { Route } from '@/routes/_auth/tules/$tulId/video';
 
 export const TulVideo = () => {
-  const params = useParams();
+  const params = Route.useParams();
 
   const selectedTul = tuls.find((tul) => tul.id === params.tulId);
 

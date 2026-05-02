@@ -1,24 +1,77 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BookOpen, Play } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { ArrowRight, Play } from 'lucide-react';
 import {
   vocabulary,
   categoryLabels,
-  categoryIcons,
   type VocabularyCategory,
-} from '../consts/vocabulary';
-import { Quiz } from '../components/Quiz';
+} from '@/consts/vocabulary';
+import { Quiz } from '@/components/Quiz';
+import { theoryBlocks } from '@/consts/theoryContent';
+import KoreanBlock from '@/assets/korean-block.svg?react';
+import { belts } from '@/consts/belts';
+import { TheoryBeltStripes } from '@/components/TheoryBeltStripes';
 
 type ViewMode = 'categories' | 'study' | 'quiz';
 
+const categories = Array.from(
+  new Set(vocabulary.map((v) => v.category))
+) as VocabularyCategory[];
+
 export const Theory = () => {
+  return (
+    <section className="flex flex-col gap-6">
+      <div className="grid grid-cols-2 gap-x-2 gap-y-6">
+        {/* Modos de estudio */}
+        {theoryBlocks.map((block) => {
+          const belt = belts.find((b) => b.id === block.beltId);
+          return (
+            <Link
+              key={block.id}
+              to="/theory/block/$id"
+              params={{ id: block.id }}
+              className="relative overflow-hidden flex flex-col justify-end gap-2 p-4 bg-white rounded-lg shadow-[0_4px_0_#cdc9c9] min-h-48"
+            >
+              {belt ? <TheoryBeltStripes belt={belt} /> : null}
+              <span className="text-xs text-balance text-gray-600">
+                {block.subtitle}
+              </span>
+              <span className="font-semibold text-xl text-balance">
+                {block.title}
+              </span>
+              <span className="flex items-center justify-between text-sm">
+                Lectura
+                <ArrowRight size={20} />
+              </span>
+            </Link>
+          );
+        })}
+
+        <Link
+          to="/theory/learn-korean"
+          className="relative overflow-hidden flex flex-col p-4 bg-primary-500 text-white rounded-lg shadow-[0_4px_0_#000] min-h-48"
+        >
+          <span className="absolute right-0 inset-y-0 flex items-center">
+            <KoreanBlock />
+          </span>
+          <span className="flex-1 flex flex-col justify-end gap-2">
+            <span className="flex-1 text-sm">Aprendizaje Libre</span>
+            <span className="text-sm">Coreano</span>
+            <span className="font-semibold text-2xl">Idioma</span>
+          </span>
+          <span className="flex justify-end">
+            <ArrowRight size={20} />
+          </span>
+        </Link>
+      </div>
+    </section>
+  );
+};
+
+export const TheoryLearnKorean = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('categories');
   const [selectedCategory, setSelectedCategory] =
     useState<VocabularyCategory | null>(null);
-
-  const categories = Array.from(
-    new Set(vocabulary.map((v) => v.category))
-  ) as VocabularyCategory[];
 
   const handleCategorySelect = (category: VocabularyCategory) => {
     setSelectedCategory(category);
@@ -62,17 +115,14 @@ export const Theory = () => {
             onClick={handleStartQuiz}
             className="flex items-center gap-2 px-4 py-2 text-white rounded-lg bg-primary-500 hover:bg-phover-500"
           >
-            <Play className="w-4 h-4" />
+            <Play className="size-4" />
             Hacer quiz
           </button>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">{categoryIcons[selectedCategory]}</span>
-          <h1 className="text-2xl font-bold">
-            {categoryLabels[selectedCategory]}
-          </h1>
-        </div>
+        <h1 className="text-2xl font-bold">
+          {categoryLabels[selectedCategory]}
+        </h1>
 
         <div className="grid gap-3 sm:grid-cols-2">
           {categoryItems.map((item, index) => (
@@ -84,55 +134,30 @@ export const Theory = () => {
   }
 
   return (
-    <section className="flex flex-col gap-6 pt-4">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">Teoría de Taekwondo</h1>
-        <p className="text-gray-600">
-          Aprende todo lo necesario para practicar Taekwondo
-        </p>
-      </div>
-
-      {/* Modos de estudio */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Link
-          to="/theory/study"
-          className="flex flex-col items-center gap-3 p-6 transition-colors bg-white border-2 border-gray-200 rounded-lg hover:border-primary-500"
-        >
-          <BookOpen className="w-8 h-8 text-primary-500" />
-          <span className="font-semibold">Estudiar teoría</span>
-          <span className="text-sm text-center text-gray-500">
-            Explora los temas del taekwondo por bloques
-          </span>
-        </Link>
-      </div>
-
-      {/* Categorías */}
-      <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Aprende coreano</h2>
-        <p className="text-gray-600">Haz concursos para aprender coreano</p>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category) => {
-            const categoryItems = vocabulary.filter(
-              (v) => v.category === category
-            );
-            return (
-              <button
-                type="button"
-                key={category}
-                onClick={() => handleCategorySelect(category)}
-                className="flex items-center gap-3 p-4 text-left transition-all bg-white border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-md"
-              >
-                <span className="text-2xl">{categoryIcons[category]}</span>
-                <div className="flex-1">
-                  <h3 className="font-semibold">{categoryLabels[category]}</h3>
-                  <p className="text-sm text-gray-500">
-                    {categoryItems.length} palabras
-                  </p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
+    <section className="flex flex-col gap-3">
+      <h2 className="text-lg font-semibold">Aprende coreano</h2>
+      <p className="text-gray-600">Haz concursos para aprender coreano</p>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {categories.map((category) => {
+          const categoryItems = vocabulary.filter(
+            (v) => v.category === category
+          );
+          return (
+            <button
+              type="button"
+              key={category}
+              onClick={() => handleCategorySelect(category)}
+              className="flex items-center gap-3 p-4 text-left transition-all bg-white border border-gray-200 rounded-lg hover:border-primary-500 hover:shadow-[0_4px_0_#cdc9c9]"
+            >
+              <div className="flex-1">
+                <h3 className="font-semibold">{categoryLabels[category]}</h3>
+                <p className="text-sm text-gray-500">
+                  {categoryItems.length} palabras
+                </p>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </section>
   );

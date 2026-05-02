@@ -1,13 +1,17 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
-import { createAppleSplashScreens, minimal2023Preset } from '@vite-pwa/assets-generator/config';
+import { createAppleSplashScreens, minimal2023Preset } from "@vite-pwa/assets-generator/config";
 import svgr from "vite-plugin-svgr";
-import path from "path";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 
 export default defineConfig({
   plugins: [
+    tanstackRouter({
+      target: "react",
+      autoCodeSplitting: true,
+    }),
     react(),
     tailwindcss(),
     svgr(),
@@ -24,16 +28,16 @@ export default defineConfig({
         start_url: "/",
       },
       pwaAssets: {
-        image: 'public/maskable_icon.png',
+        image: "public/maskable_icon.png",
         preset: {
           ...minimal2023Preset,
           appleSplashScreens: createAppleSplashScreens({
             padding: 0.3,
-            resizeOptions: { background: '#fff', fit: 'contain' },
+            resizeOptions: { background: "#fff", fit: "contain" },
             linkMediaOptions: {
               log: true,
               addMediaScreen: true,
-              basePath: '/',
+              basePath: "/",
               xhtml: false,
             },
             png: {
@@ -41,13 +45,13 @@ export default defineConfig({
               quality: 60,
             },
             name: (landscape, size) => {
-              return `apple-splash-${landscape ? 'landscape' : 'portrait'}-${size.width}x${size.height}.png`;
+              return `apple-splash-${landscape ? "landscape" : "portrait"}-${size.width}x${size.height}.png`;
             }
           }, [
-                'iPhone 16', 'iPhone 16 Plus', 'iPhone 16 Pro', 'iPhone 16 Pro Max',
-                'iPhone 15', 'iPhone 15 Plus', 'iPhone 15 Pro', 'iPhone 15 Pro Max',
-                'iPhone 14', 'iPhone 14 Plus', 'iPhone 14 Pro', 'iPhone 14 Pro Max',
-                'iPad 11"', 'iPad Air 11"', 'iPad Pro 11"'
+                "iPhone 16", "iPhone 16 Plus", "iPhone 16 Pro", "iPhone 16 Pro Max",
+                "iPhone 15", "iPhone 15 Plus", "iPhone 15 Pro", "iPhone 15 Pro Max",
+                "iPhone 14", "iPhone 14 Plus", "iPhone 14 Pro", "iPhone 14 Pro Max",
+                "iPad 11\"", "iPad Air 11\"", "iPad Pro 11\""
              ]),
         },
       },
@@ -55,7 +59,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": `${import.meta.dirname}/src`,
     },
   },
 });
