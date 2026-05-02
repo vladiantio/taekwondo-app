@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { LoadingPage } from './components/LoadingPage';
 
-
 const SCREEN_ORDER = [
   '/calendar',
   '/tules',
@@ -72,8 +71,9 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('isLogged');
+    await router.invalidate();
     router.navigate({ to: '/login' });
   };
 
