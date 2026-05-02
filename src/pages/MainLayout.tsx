@@ -1,15 +1,9 @@
-import { Outlet, useBlocker, useCanGoBack } from '@tanstack/react-router';
+import { Outlet } from '@tanstack/react-router';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
+import { ExitConfirmation } from '@/components/ExitConfirmation';
 
 export function MainLayout() {
-  const canGoBack = useCanGoBack();
-
-  useBlocker({
-    shouldBlockFn: ({ action }) => action === 'BACK' && !canGoBack,
-    enableBeforeUnload: true,
-  });
-
   return (
     <div className="flex flex-col h-full min-h-0 w-full min-w-0 *:px-4">
       <Header />
@@ -17,6 +11,7 @@ export function MainLayout() {
         <Outlet />
       </main>
       <BottomNav />
+      <ExitConfirmation />
     </div>
   );
 }

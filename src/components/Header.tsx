@@ -1,5 +1,10 @@
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { Link, useCanGoBack, useLocation, useRouter } from '@tanstack/react-router';
+import {
+  Link,
+  useCanGoBack,
+  useLocation,
+  useRouter,
+} from '@tanstack/react-router';
 import { ProfileAvatar } from './ProfileAvatar';
 import { Button } from '@/common/Button';
 
@@ -70,9 +75,9 @@ export function Header() {
   const showBack = isSubRoute || backToExams;
 
   // Encontrar la ruta base para volver atrás si no hay historial (ej: /theory/block/1 -> /theory)
-  const baseRoute = !canGoBack ? headerTitleRoutes.find((h) =>
-    path.startsWith(`${h.to}/`)
-  )?.to : undefined;
+  const baseRoute = !canGoBack
+    ? headerTitleRoutes.find((h) => path.startsWith(`${h.to}/`))?.to
+    : undefined;
 
   const backNavigateTo = backToExams ? '/exams' : baseRoute;
 
