@@ -39,12 +39,12 @@ export const BottomNav = () => {
 
   return (
     <nav
-      className="sticky bottom-0 inset-x-0 px-4 z-40 safe-area-bottom-2 landscape:hidden [view-transition-name:bottom-nav]"
+      className="[view-transition-name:bottom-nav] shrink-0 safe-area-bottom-2 landscape:hidden -mt-8"
       aria-label="Navegación principal"
     >
       <div className="relative h-16 max-w-2xl mx-auto rounded-full bg-primary-500">
         <div
-          aria-hidden
+          aria-hidden="true"
           className={cn(
             'pointer-events-none absolute top-1 bottom-1 left-6 z-0 w-[calc((100%-3rem-0.5rem)/3)] rounded-full bg-white/10 transition-[transform,opacity] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none will-change-transform',
             !hasActiveTab && 'opacity-0'

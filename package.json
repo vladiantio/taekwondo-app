@@ -15,6 +15,7 @@
   "dependencies": {
     "@base-ui/react": "^1.3.0",
     "@tanstack/react-router": "^1.168.23",
+    "better-auth": "^1.4.9",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.562.0",
@@ -49,5 +50,6 @@
     "vite-plugin-pwa": {
       "vite": "$vite"
     }
-  }
+  },
+  "packageManager": "pnpm@10.33.2"
 }

@@ -1,17 +1,22 @@
 import { useState } from 'react';
 import {
   theoryBlocks,
-  beltFilters,
-  type BeltRange,
+  theoryStudyFilters,
+  theoryStudyFilterForExamId,
+  type TheoryStudyFilterId,
 } from '@/consts/theoryContent';
+import { belts } from '@/consts/belts';
 
 export const TheoryStudy = () => {
-  const [selectedFilter, setSelectedFilter] = useState<BeltRange>('all');
+  const [selectedFilter, setSelectedFilter] =
+    useState<TheoryStudyFilterId>('all');
 
   const filteredBlocks =
     selectedFilter === 'all'
       ? theoryBlocks
-      : theoryBlocks.filter((block) => block.beltRange === selectedFilter);
+      : theoryBlocks.filter(
+          (block) => theoryStudyFilterForExamId(block.id) === selectedFilter
+        );
 
   const renderContent = (content: string) => {
     return content.split('\n').map((paragraph, idx) => {
@@ -41,14 +46,9 @@ export const TheoryStudy = () => {
     });
   };
 
-  const getBeltColors = (beltRange: BeltRange) => {
-    const filter = beltFilters.find((f) => f.id === beltRange);
-    return filter?.colors || ['bg-gray-500'];
-  };
-
-  const getBeltLabel = (beltRange: BeltRange) => {
-    const filter = beltFilters.find((f) => f.id === beltRange);
-    return filter?.label || 'General';
+  const getBeltBadge = (beltId: string) => {
+    const belt = belts.find((b) => b.id === beltId);
+    return belt?.alt ?? beltId;
   };
 
   return (
@@ -62,14 +62,14 @@ export const TheoryStudy = () => {
 
       <div className="sticky top-0 z-10 py-3 -mx-4 px-4 bg-gray-50">
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {beltFilters.map((filter) => (
+          {theoryStudyFilters.map((filter) => (
             <button
               key={filter.id}
               type="button"
               onClick={() => setSelectedFilter(filter.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full whitespace-nowrap transition-all ${
                 selectedFilter === filter.id
-                  ? 'bg-primary-500 text-white shadow-md'
+                  ? 'bg-primary-500 text-white shadow-[0_4px_0_#000]'
                   : 'bg-white text-gray-700 border border-gray-200 hover:border-primary-500'
               }`}
             >
@@ -98,16 +98,8 @@ export const TheoryStudy = () => {
                 <h2 className="text-xl font-bold text-gray-900">
                   {block.title}
                 </h2>
-                <span className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full shrink-0 bg-gray-100">
-                  <span className="flex -space-x-1">
-                    {getBeltColors(block.beltRange).map((color, idx) => (
-                      <span
-                        key={idx}
-                        className={`w-2.5 h-2.5 rounded-full ${color} ${idx > 0 ? 'ring-1 ring-white' : ''}`}
-                      />
-                    ))}
-                  </span>
-                  {getBeltLabel(block.beltRange)}
+                <span className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full shrink-0 bg-gray-100 max-w-[min(12rem,45%)] text-right">
+                  {getBeltBadge(block.beltId)}
                 </span>
               </div>
               <div className="prose prose-gray max-w-none">

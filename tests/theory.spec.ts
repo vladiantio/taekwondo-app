@@ -6,7 +6,7 @@ test('theory page shows blocks and korean learning card', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Teoría' })).toBeVisible();
 
   // Should show theory blocks
-  await expect(page.getByText('Bloque 1')).toBeVisible();
+  await expect(page.getByText('Introducción a la teoría')).toBeVisible();
 
   // Should show the Korean learning card
   await expect(page.getByText('Coreano')).toBeVisible();
@@ -17,7 +17,7 @@ test('clicking a theory block shows its content', async ({ page }) => {
 
   // Click on the first theory block
   await page
-    .getByRole('link', { name: 'Introducción a la Teoría del' })
+    .getByRole('link', { name: 'Introducción a la teoría' })
     .click();
 
   // Should show some content (theory block detail page)

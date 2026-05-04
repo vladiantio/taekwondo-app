@@ -37,7 +37,7 @@ export const Tules = () => {
             placeholder="Buscar por nombre, movimientos..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="box-border bg-white pr-10 pl-9 border-2 border-gray-300 focus:border-primary-500 border-solid rounded-lg outline-none w-full min-w-0 h-12 text-gray-900"
+            className="box-border bg-white pr-10 pl-9  border-2 border-gray-300 focus:border-primary-500 border-solid rounded-lg outline-none w-full min-w-0 h-12 text-gray-900 transition-colors"
           />
           {searchQuery && (
             <button
@@ -85,11 +85,11 @@ const TulCard = ({ tul }: { tul: Tul }) => {
     <Link
       to="/tules/$tulId"
       params={{ tulId: tul.id }}
-      className="flex flex-col gap-4 bg-white pb-4 rounded-b-md"
+      className="flex flex-col gap-4 overflow-hidden bg-white pb-4 rounded-lg shadow-[0_4px_0_#cdc9c9] transition-colors active:bg-slate-50"
     >
       <div className="relative">
         <img
-          src="/imgs/Rectangle.png"
+          src="/imgs/rectangle.webp"
           alt="Tul"
           className="w-full object-cover aspect-4/3"
         />

@@ -25,6 +25,7 @@ dist-ssr
 *.sw?
 
 public/videos
+.env
 
 # Playwright
 /test-results/

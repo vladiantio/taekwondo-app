@@ -1,11 +1,14 @@
 import { Link } from '@tanstack/react-router';
-import { BookOpen, Dumbbell } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { exams } from '@/consts/exams';
 import { tuls } from '@/consts/tuls';
 import { useProgress } from '@/context/ProgressContext';
 import { BeltIcon } from '@/components/BeltIcon';
 import { belts } from '@/consts/belts';
 import { Route } from '@/routes/_auth/exams/$examId';
+import { getTheoryBlockForExam } from '@/consts/theoryContent';
+import { TheoryBeltStripes } from '@/components/TheoryBeltStripes';
+import { cn } from '@/utils/cn';
 
 // Mapeo de qué tules corresponden a cada examen
 const examTuls: Record<string, string[]> = {
@@ -41,13 +44,17 @@ export const ExamDetail = () => {
     );
   }
 
+  const theoryBlock = getTheoryBlockForExam(exam.id);
+  const theoryBelt = theoryBlock
+    ? belts.find((b) => b.id === theoryBlock.beltId)
+    : undefined;
+
   const requiredTuls = (examTuls[exam.id] || [])
     .map((tulId) => tuls.find((t) => t.id === tulId))
     .filter(Boolean);
 
   return (
     <section className="flex flex-col gap-6 pt-4">
-      {/* Header con imagen */}
       <div className="flex items-center gap-4">
         {belt && <BeltIcon belt={belt} className="w-16 h-auto" />}
         <div>
@@ -58,14 +65,10 @@ export const ExamDetail = () => {
         </div>
       </div>
 
-      {/* Tules requeridos */}
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <Dumbbell className="w-5 h-5 text-primary-500" />
-          <h2 className="text-lg font-semibold">Tules requeridos</h2>
-        </div>
+        <h2 className="text-lg font-semibold">Tules</h2>
         {requiredTuls.length > 0 ? (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-3">
             {requiredTuls.map((tul) => {
               if (!tul) return null;
               const status = getTulStatus(tul.id);
@@ -74,35 +77,50 @@ export const ExamDetail = () => {
                   key={tul.id}
                   to="/tules/$tulId"
                   params={{ tulId: tul.id }}
-                  className="flex items-center justify-between p-3 transition-colors bg-white border border-gray-200 rounded-lg hover:border-primary-500"
+                  aria-label={`Ir a la forma ${tul.name}`}
+                  className={cn(
+                    'flex items-center gap-3 bg-white rounded-lg shadow-[0_4px_0_#cdc9c9] p-4',
+                    'transition-colors active:bg-slate-50'
+                  )}
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        status === 'completed'
-                          ? 'bg-green-500'
-                          : status === 'in_progress'
-                            ? 'bg-amber-500'
-                            : 'bg-gray-300'
-                      }`}
+                  <div className="shrink-0 size-16 rounded-lg overflow-hidden border-2 border-primary-500 bg-white">
+                    <img
+                      src={tul.diagram}
+                      alt=""
+                      className="size-full object-cover"
                     />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">{tul.name}</p>
-                        {tul.isPreTul && (
-                          <span className="px-1.5 py-0.5 text-xs font-medium text-white rounded bg-amber-500">
-                            Pre-Tul
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        {tul.moves} movimientos
-                      </p>
-                    </div>
                   </div>
-                  <span className="text-sm text-gray-400">
-                    {tul.korean_name}
-                  </span>
+                  <div className="flex flex-col items-start flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-black font-manrope text-gray-900">
+                        {tul.name}
+                      </span>
+                      {tul.isPreTul && (
+                        <span className="px-1.5 py-0.5 text-xs font-medium text-white rounded bg-amber-500">
+                          Pre-Tul
+                        </span>
+                      )}
+                      <span
+                        className={cn(
+                          'size-2.5 rounded-full shrink-0',
+                          status === 'completed' && 'bg-green-500',
+                          status === 'in_progress' && 'bg-amber-500',
+                          status !== 'completed' &&
+                            status !== 'in_progress' &&
+                            'bg-gray-300'
+                        )}
+                        aria-hidden
+                      />
+                    </div>
+                    <span className="text-sm text-gray-500">
+                      {tul.moves} movimientos
+                    </span>
+                  </div>
+                  <ChevronRight
+                    aria-hidden
+                    className="shrink-0 text-[#191919]"
+                    size={28}
+                  />
                 </Link>
               );
             })}
@@ -114,14 +132,40 @@ export const ExamDetail = () => {
         )}
       </div>
 
-      {/* Teoría requerida (placeholder) */}
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-primary-500" />
-          <h2 className="text-lg font-semibold">Teoría requerida</h2>
-        </div>
-        <div className="p-4 text-center border border-gray-300 border-dashed rounded-lg">
-          <p className="text-sm text-gray-400">Próximamente...</p>
+        <h2 className="text-lg font-semibold">Teoría</h2>
+        {theoryBlock && theoryBelt ? (
+          <Link
+            to="/theory/block/$id"
+            params={{ id: theoryBlock.id }}
+            className="relative overflow-hidden flex flex-col justify-end gap-2 p-4 bg-white rounded-lg shadow-[0_4px_0_#cdc9c9] min-h-44 text-left transition-colors active:bg-slate-50"
+          >
+            <TheoryBeltStripes belt={theoryBelt} />
+            <span className="text-xs text-balance text-gray-600">
+              {theoryBlock.subtitle}
+            </span>
+            <span className="font-semibold text-xl text-balance text-gray-900">
+              {theoryBlock.title}
+            </span>
+            <span className="flex items-center justify-between text-sm text-gray-800 pt-1">
+              Lectura
+              <ChevronRight aria-hidden size={20} />
+            </span>
+          </Link>
+        ) : null}
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold">Posiciones</h2>
+        <p className="text-sm text-gray-400">
+          Contenido pendiente; lo indicarás después.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Roturas</h2>
+        <div className="flex items-center gap-3 bg-white rounded-lg shadow-[0_4px_0_#cdc9c9] p-4 text-gray-800">
+          <p className="text-sm leading-snug flex-1">{exam.breaking}</p>
         </div>
       </div>
     </section>

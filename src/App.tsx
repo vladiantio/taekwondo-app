@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { LoadingPage } from './components/LoadingPage';
 
-
 const SCREEN_ORDER = [
   '/calendar',
   '/tules',
@@ -19,6 +18,19 @@ function screenIndexForPathname(pathname: string): number {
   );
 }
 
+function isMainTabRootPath(pathname: string): boolean {
+  const p = pathname.replace(/\/$/, '') || '/';
+  if (p === '/') return true;
+  const roots: readonly string[] = [
+    '/calendar',
+    '/tules',
+    '/exams',
+    '/theory',
+    '/account',
+  ];
+  return roots.includes(p);
+}
+
 const router = createRouter({
   routeTree,
   scrollRestoration: true,
@@ -30,7 +42,16 @@ const router = createRouter({
       const fromScreen = screenIndexForPathname(fromLocation.pathname);
       const toScreen = screenIndexForPathname(toLocation.pathname);
 
-      if (fromScreen !== -1 && toScreen !== -1 && fromScreen !== toScreen) {
+      const bothAtTabRoots =
+        isMainTabRootPath(fromLocation.pathname) &&
+        isMainTabRootPath(toLocation.pathname);
+
+      if (
+        bothAtTabRoots &&
+        fromScreen !== -1 &&
+        toScreen !== -1 &&
+        fromScreen !== toScreen
+      ) {
         return fromScreen < toScreen ? ['tab-next'] : ['tab-prev'];
       }
 
@@ -56,11 +77,15 @@ function App() {
   };
 
   return (
-    <AuthProvider onLogout={handleLogout}>
-      <ProgressProvider>
-        <RouterProvider router={router} />
-      </ProgressProvider>
-    </AuthProvider>
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col">
+      <AuthProvider onLogout={handleLogout}>
+        <ProgressProvider>
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+            <RouterProvider router={router} />
+          </div>
+        </ProgressProvider>
+      </AuthProvider>
+    </div>
   );
 }
 

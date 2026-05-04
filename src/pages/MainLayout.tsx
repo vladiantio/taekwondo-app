@@ -4,13 +4,11 @@ import { BottomNav } from '@/components/BottomNav';
 
 export function MainLayout() {
   return (
-    <div className="flex flex-col h-dvh bg-[#F7F7F7] safe-area-top safe-area-bottom">
-      <div className="flex-1 flex flex-col min-h-0 pb-6 px-4 **:data-[slot=loading-page]:h-full">
-        <Header />
-        <main className="[view-transition-name:main-content] flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-[#F7F7F7] pb-24">
-          <Outlet />
-        </main>
-      </div>
+    <div className="flex flex-col h-full min-h-0 w-full min-w-0 *:px-4">
+      <Header />
+      <main className="[view-transition-name:main-content] hide-scrollbar flex-1 min-h-0 overflow-y-auto overflow-x-hidden bg-background **:data-[slot=loading-page]:h-full pb-12">
+        <Outlet />
+      </main>
       <BottomNav />
     </div>
   );

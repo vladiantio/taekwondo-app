@@ -58,7 +58,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=dev-latest
+            type=raw,value=latest
             type=raw,value=${{ steps.version.outputs.rc_version }}
             type=raw,value=${{ steps.version.outputs.version_tag }}
             type=raw,value=${{ github.ref_name }}-${{ github.sha }}

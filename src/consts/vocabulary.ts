@@ -4,7 +4,8 @@ export type VocabularyCategory =
   | 'body'
   | 'colors'
   | 'techniques'
-  | 'phrases';
+  | 'phrases'
+  | 'heights';
 
 export type VocabularyItem = {
   korean: string;
@@ -109,6 +110,80 @@ export const vocabulary: VocabularyItem[] = [
     pronunciation: 'dwiro',
     spanish: 'Atrás',
     category: 'commands',
+  },
+
+  // Zonas de ataque, altura y términos de bloques (ITF)
+  {
+    korean: '얼굴',
+    pronunciation: 'eolgul',
+    spanish: 'Cara o cabeza (zona alta de ataque o defensa)',
+    category: 'heights',
+  },
+  {
+    korean: '몸통',
+    pronunciation: 'momtong',
+    spanish: 'Zona media (tronco: pecho, abdomen alto)',
+    category: 'heights',
+  },
+  {
+    korean: '하단',
+    pronunciation: 'hadan',
+    spanish: 'Zona baja (pubis, muslos, tibia)',
+    category: 'heights',
+  },
+  {
+    korean: '높은',
+    pronunciation: 'nopeun',
+    spanish: 'Alto (golpe, bloqueo o cámara en altura alta)',
+    category: 'heights',
+  },
+  {
+    korean: '낮은',
+    pronunciation: 'najeun',
+    spanish: 'Bajo (golpe o cámara en altura baja)',
+    category: 'heights',
+  },
+  {
+    korean: '높은데',
+    pronunciation: 'nopeunde',
+    spanish: 'A la altura alta (nivel del rostro, defensa, etc.)',
+    category: 'heights',
+  },
+  {
+    korean: '낮은데',
+    pronunciation: 'najunde',
+    spanish: 'A la altura baja (defensa, patada, etc.)',
+    category: 'heights',
+  },
+  {
+    korean: '아래',
+    pronunciation: 'arae',
+    spanish: 'Abajo; parte inferior; en la zona baja de la técnica',
+    category: 'heights',
+  },
+  {
+    korean: '위',
+    pronunciation: 'wi',
+    spanish: 'Arriba; hacia arriba; parte superior',
+    category: 'heights',
+  },
+  {
+    korean: '중',
+    pronunciation: 'jung',
+    spanish: 'Medio; centro; altura intermedia (medio cuerpo)',
+    category: 'heights',
+  },
+  {
+    korean: '가운데',
+    pronunciation: 'gaunde',
+    spanish: 'En el centro; al medio (posición a altura media)',
+    category: 'heights',
+  },
+  {
+    korean: '반달',
+    pronunciation: 'bandal',
+    spanish: '“Media luna” (p. ej. bandal dollyeochagi: arco y altura de patada)',
+    category: 'heights',
   },
 
   // Partes del cuerpo
@@ -273,13 +348,6 @@ export const categoryLabels: Record<VocabularyCategory, string> = {
   colors: 'Colores',
   techniques: 'Técnicas',
   phrases: 'Frases útiles',
+  heights: 'Zonas y alturas',
 };
 
-export const categoryIcons: Record<VocabularyCategory, string> = {
-  numbers: '🔢',
-  commands: '📢',
-  body: '👤',
-  colors: '🎨',
-  techniques: '🥋',
-  phrases: '💬',
-};

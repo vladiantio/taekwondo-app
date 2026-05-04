@@ -2,7 +2,7 @@ FROM node:23-bookworm-slim AS builder
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
-COPY pnpm-*.json ./
+COPY pnpm-lock.yaml ./
 COPY package.json ./
 RUN pnpm install --frozen-lockfile
 

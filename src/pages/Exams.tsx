@@ -6,7 +6,7 @@ import { BeltIcon } from '@/components/BeltIcon';
 import { useProgress } from '@/context/ProgressContext';
 import { cn } from '@/utils/cn';
 import ExamLine from '@/assets/exam-line.svg?react';
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 const PERIOD = 4;
 const AMPLITUDE = 2;
@@ -17,10 +17,17 @@ export function Exams() {
   const currentExamIndex = exams.findIndex((exam) => exam.id === currentExam);
   const offset = (PERIOD - (currentExamIndex % PERIOD)) % PERIOD;
 
-  useEffect(() => {
-    if (anchorElement.current) {
-      anchorElement.current.scrollIntoView({ block: 'center' });
-    }
+  useLayoutEffect(() => {
+    const el = anchorElement.current;
+    if (!el) return;
+    const main = el.closest('main');
+    if (!main) return;
+
+    const elRect = el.getBoundingClientRect();
+    const mainRect = main.getBoundingClientRect();
+    const y = elRect.top - mainRect.top + main.scrollTop;
+    const target = y - (main.clientHeight - elRect.height) / 2;
+    main.scrollTo({ top: Math.max(0, target) });
   }, []);
 
   return (
@@ -54,11 +61,11 @@ function CurrentExam() {
       params={{ examId: exam?.id ?? '' }}
       className="bg-[#2D2D2D] text-white flex rounded-xl shadow-[0_6px_0_#000] h-20"
     >
-      <div className="flex flex-col justify-center px-4 flex-1">
+      <div className="flex flex-col justify-center flex-1 px-4">
         <small>Continuar con</small>
         <strong>Examen Cinturón {belt?.label}</strong>
       </div>
-      <div className="border-l-2 border-black flex items-center px-4">
+      <div className="flex items-center px-4 border-l-2 border-black">
         <GraduationCap />
       </div>
     </Link>
@@ -105,16 +112,16 @@ function ExamCard({
       <div className="shrink-0 flex items-center justify-center size-16 border-2 border-primary-500 bg-white rounded-full shadow-[0_4px_0_var(--color-primary-500)]">
         {belt && <BeltIcon belt={belt} width={50} />}
       </div>
-      <div className="flex-1 flex flex-col items-start">
+      <div className="flex flex-col items-start flex-1">
         {isActive && (
           <div className="text-xs px-2 py-0.5 bg-primary-500/10 text-primary-500 rounded-full font-medium mb-1">
             Actual
           </div>
         )}
-        <span className="font-medium text-sm text-gray-700">
+        <span className="text-sm font-medium text-gray-700">
           Nivel {exam.range}
         </span>
-        <h2 className="font-manrope font-black">Cinturón {belt?.label}</h2>
+        <h2 className="font-black font-manrope">Cinturón {belt?.label}</h2>
       </div>
       {isActive && (
         <ChevronRight aria-label="Ir al examen" color="#191919" size={28} />
