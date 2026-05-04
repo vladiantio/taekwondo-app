@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Button } from '@/common/Button';
 import { Eye, EyeOff } from 'lucide-react';
+
+import { Button } from '@/common/Button';
 import { authClient } from '../../lib/auth-client';
+import { useState } from 'react';
 
 type LoginProps = {
   onLoginSuccess: () => void;
@@ -50,8 +51,8 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
   };
 
   return (
-    <section className="font-manrope w-full flex item-center justify-center h-dvh bg-[url('/imgs/bg-login.webp')] bg-no-repeat bg-size-[150%] bg-position-[calc(50%+30px)_center]">
-      <div className="flex items-center justify-center w-full h-full">
+    <section className="flex justify-center bg-[url('/imgs/bg-login.webp')] bg-position-[calc(50%+30px)_center] bg-no-repeat w-full h-dvh bg-size-[150%] font-manrope item-center">
+      <div className="flex justify-center items-center w-full h-full">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -59,12 +60,12 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
               signIn();
             }
           }}
-          className="flex h-fit w-[90%] flex-col items-center justify-center gap-4 bg-white border border-gray-300 px-4 py-6 rounded-md"
+          className="flex flex-col justify-center items-center gap-4 bg-white px-4 py-6 border border-gray-300 rounded-md w-[90%] h-fit"
         >
-          <div className="flex flex-col items-center w-full gap-2">
+          <div className="flex flex-col items-center gap-2 w-full">
             <img src="/imgs/logo.webp" width={80} alt="logo escuela" />
-            <h1 className="text-3xl font-bold">Iniciar sesión</h1>
-            <p className="leading-5 text-center text-gray-500 text-md">
+            <h1 className="font-bold text-3xl">Iniciar sesión</h1>
+            <p className="text-gray-500 text-md text-center leading-5">
               Inicia sesión en tu cuenta de Taekwondo de la escuela RAM
             </p>
           </div>
@@ -72,7 +73,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
             <p className="sr-only">Correo electrónico</p>
             <input
               type="email"
-              className="flex items-center w-full h-12 px-4 text-gray-900 border border-gray-300 rounded-md active:border-gray-400"
+              className="flex items-center px-4 border border-gray-300 active:border-gray-400 rounded-md w-full h-12 text-gray-900"
               placeholder="Correo electrónico"
               onChange={(event) => {
                 setFormData({ ...formData, email: event.target.value });
@@ -90,7 +91,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
               id="login-password"
               type={showPassword ? 'text' : 'password'}
               placeholder="Contraseña"
-              className="flex items-center w-full h-12 px-4 pr-12 text-gray-900 border border-gray-300 rounded-md active:border-gray-400"
+              className="flex items-center px-4 pr-12 border border-gray-300 active:border-gray-400 rounded-md w-full h-12 text-gray-900"
               onChange={(event) => {
                 setFormData({ ...formData, password: event.target.value });
                 setError(null);
@@ -101,7 +102,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute text-gray-500 -translate-y-1/2 right-3 top-1/2 active:text-gray-700 focus:outline-none"
+              className="top-1/2 right-3 absolute focus:outline-none text-gray-500 active:text-gray-700 -translate-y-1/2"
               aria-label={
                 showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
               }
@@ -111,7 +112,7 @@ export const Login = ({ onLoginSuccess }: LoginProps) => {
             </button>
           </div>
           {error && (
-            <div className="w-full p-3 text-sm text-red-600 border border-red-200 rounded-md bg-red-50">
+            <div className="bg-red-50 p-3 border border-red-200 rounded-md w-full text-red-600 text-sm">
               {error}
             </div>
           )}
