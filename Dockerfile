@@ -10,6 +10,7 @@ COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY index.html ./
 COPY src/ ./src/
+COPY lib/ ./lib/
 COPY public/ ./public/
 
 RUN pnpm run build
