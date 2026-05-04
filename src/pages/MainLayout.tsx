@@ -1,6 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
+import { ExitConfirmation } from '@/components/ExitConfirmation';
 
 export function MainLayout() {
   return (
@@ -10,6 +11,7 @@ export function MainLayout() {
         <Outlet />
       </main>
       <BottomNav />
+      <ExitConfirmation />
     </div>
   );
 }

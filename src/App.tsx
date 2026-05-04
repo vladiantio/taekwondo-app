@@ -71,8 +71,9 @@ declare module '@tanstack/react-router' {
 }
 
 function App() {
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('isLogged');
+    await router.invalidate();
     router.navigate({ to: '/login' });
   };
 

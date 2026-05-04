@@ -1,5 +1,10 @@
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { Link, useLocation, useRouter } from '@tanstack/react-router';
+import {
+  Link,
+  useCanGoBack,
+  useLocation,
+  useRouter,
+} from '@tanstack/react-router';
 import { ProfileAvatar } from './ProfileAvatar';
 import { Button } from '@/common/Button';
 
@@ -29,7 +34,12 @@ type BackButtonProps = React.ComponentProps<typeof Button> & {
   navigateTo?: string;
 };
 
-function BackButton({ navigateTo, onClick, className, ...props }: BackButtonProps) {
+function BackButton({
+  navigateTo,
+  onClick,
+  className,
+  ...props
+}: BackButtonProps) {
   const router = useRouter();
   return (
     <Button
@@ -53,6 +63,7 @@ function BackButton({ navigateTo, onClick, className, ...props }: BackButtonProp
 }
 
 export function Header() {
+  const canGoBack = useCanGoBack();
   const { pathname } = useLocation();
   const path = normalizePathname(pathname);
   const title = titleForPath(path);
@@ -62,7 +73,13 @@ export function Header() {
 
   const backToExams = path === '/calendar' || path === '/account';
   const showBack = isSubRoute || backToExams;
-  const backNavigateTo = backToExams ? '/exams' : undefined;
+
+  // Encontrar la ruta base para volver atrás si no hay historial (ej: /theory/block/1 -> /theory)
+  const baseRoute = !canGoBack
+    ? headerTitleRoutes.find((h) => path.startsWith(`${h.to}/`))?.to
+    : undefined;
+
+  const backNavigateTo = backToExams ? '/exams' : baseRoute;
 
   return (
     <header className="flex shrink-0 items-center justify-between bg-background safe-area-top-3 pb-3">

@@ -25,7 +25,7 @@ function LoginComponent() {
     <Login
       onLoginSuccess={() => {
         localStorage.setItem('isLogged', 'true');
-        navigate({ to: redirect ?? '/' });
+        navigate({ to: redirect ?? '/', replace: true });
       }}
     />
   );
