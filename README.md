@@ -1,24 +1,27 @@
-# Taekwondo app
+# Taekwondo App
 
----
+This README is the **local development guide** for contributors.
 
-## Screenshots
+## How it fits together
 
-### SOON...
+```
+┌──────────────────────┐
+│ taekwondo-app (this) │
+│ :5173                │
+└──────────┬───────────┘
+           │ VITE_BASE_URL = http://localhost:8080
+           ▼
+   ┌──────────────────┐
+   │ taekwondo-api    │
+   │ :8080            │
+   └──────────┬───────┘
+              ▼
+       ┌──────────────┐
+       │ MongoDB :27017│
+       └──────────────┘
+```
 
----
-
-## Overview
-
-### SOON...
-
----
-
-## Features
-
-### SOON...
-
----
+`lib/auth-client.ts` reads its base URL from either `window.__APP_CONFIG__.baseURL` (Docker runtime) or `import.meta.env.VITE_BASE_URL` (local dev). For local dev you just need to set `VITE_BASE_URL`.
 
 ## Getting Started
 
@@ -26,8 +29,9 @@
 
 Make sure you have the following installed on your system:
 
-- **Node.js** (v20 LTS)
-- **npm**
+- **Node.js** (v20 LTS, see `.node-version`)
+- **pnpm** (v10+, `corepack enable`)
+- A running **taekwondo-api** on `:8080` (see `taekwondo-api/README.md`)
 
 ---
 
@@ -36,15 +40,17 @@ Make sure you have the following installed on your system:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/afordigital/taekwondo-app.git
+git clone https://github.com/Tekwondo-RAM/taekwondo-app.git
 cd taekwondo-app
 ```
 
 Install the dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
+
+Create your `.env` (see [Environment variables](#environment-variables)).
 
 ---
 
@@ -53,13 +59,13 @@ npm install
 Start the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 You should see output similar to:
 
 ```text
-VITE v5.4.11  ready in 438 ms
+VITE v8.x  ready in 438 ms
 
 ➜  Local:   http://localhost:5173/
 ➜  Network: http://192.168.1.44:5173/
@@ -72,7 +78,49 @@ Open your browser and navigate to:
 http://localhost:5173/
 ```
 
----
+## Environment variables
+
+`.env` is gitignored. Create it at the repo root:
+
+```env
+VITE_BASE_URL=http://localhost:8080
+```
+
+In production, `docker-entrypoint.sh` writes `window.__APP_CONFIG__.baseURL` from `VITE_BASE_URL` so the same image works across environments without rebuilding.
+
+## Wiring to the API
+
+1. Start the API: `cd ../taekwondo-api && docker compose up -d && pnpm dev`.
+2. Make sure the API's `ORIGINS` includes `http://localhost:5173` (it does by default).
+3. Set `VITE_BASE_URL=http://localhost:8080` in this app's `.env`.
+4. Restart `pnpm dev` after any `.env` change.
+
+## Scripts
+
+- `pnpm dev` — Vite dev server on `:5173`
+- `pnpm build` — type-check and build to `dist/`
+- `pnpm preview` — serve the production build locally
+- `pnpm lint` / `pnpm lint:fix` — [oxlint](https://oxc.rs/docs/guide/usage/linter.html) (type-aware)
+- `pnpm format` / `pnpm format:check` — [oxfmt](https://oxc.rs/)
+
+CI runs `lint` and `format:check`.
+
+- Routes are file-based — drop a file in `src/routes/` and the router plugin updates `routeTree.gen.ts` automatically.
+- Path alias `@` → `src/`.
+- Tailwind v4 is wired via `@tailwindcss/vite`; config lives in CSS.
+
+## Testing
+
+Playwright (mobile Chrome + Safari emulation):
+
+```bash
+pnpm dlx playwright install     # one-time
+pnpm dlx playwright test
+pnpm dlx playwright test --ui   # debug
+```
+
+The setup project (`tests/auth.setup.ts`) signs in once and stores `storageState.json`. The API must be running.
+
 
 ## Contributing
 
@@ -98,6 +146,8 @@ git push origin feature-name
 ```
 
 5. Create a Pull Request
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for branch naming, commit conventions, and the PR template.
 
 ---
 
